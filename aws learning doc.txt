@@ -1,0 +1,82 @@
+to register for the internal assessment, fill any one of the forms below
+-https://forms.gle/ToAu2Nv2PfFiRXot6 or
+-https://forms.office.com/r/7SsJtUQCvt
+
+to Know more about the internal assessment check the blog here
+-https://knome.ultimatix.net/app/blogposts/854740
+
+Naming convention: 
+-Asian pacific(Mumbai) is region name ap-south-1 is region name. ap-south-1a,ap-south-1b or AZ(Availability Zone) names.
+-One city is one region and one city will have multiple AZ's to avoid disasters and considering latency between components we must choose specific and multiple AZ's. one AZ can be multiple
+ data centers.
+-Other than the usual regions and AZ's which are listed in aws website we also have 400+ Edge locations and regional cache locations which are together called POP points of presence.
+-Ex. in Chennai we might have one pop to cache content to deliver to Chennai people fast instead of directly making request to Mumbai or hyd region.
+
+Region Selection:
+-Points to be considered are Compliance, Proximity(Latency), Availability of particular service, pricing.
+
+Types of Services:
+-Global services- region does not matter  for these services IAM,Route S3, CloudFront.
+-Region-scoped services - we need to configure separately for each region.EC2.
+
+Service 1 IAM:
+-Users: individual accounts for people
+-User groups: helps to assign policies easily to similar workers
+-Policy : JSON docs defined set of access levels for services .
+-Roles : will be given to individual services like EC2 to access other services like S3 without needing to hard code authentication values.
+-We can assign policy's to users directly, via group, inline(creating custom policy on the spot).
+-Ways to manage aws services : AWS Mangement console(Webisite), CLI, SDK( language specific package).
+-Management console is accessed with username, password and MFA but CLI and SDK is accessed with access ID and access keys generated via management console for each account.
+-Go to users then click on user and then go to security credentials to generate access keys.
+-after generating access key use "aws configure" command then "aws iam list-users"
+-To run commands we have aws cloud shell also which is available in very very less number of regions.
+-very interesting feature in cloud shell is we can upload, download and write files into the cloud shell. use pwd command to know the full file location to which you are writing to and from
+ where you need to download to.
+-Two important security audit features in IAM are credential report and access advisor(Last accessed).
+-Never ever use root account for any purpose because for root account we cannot limit any accesses or we cannot assign any policy to it.
+-It is important to enforce MFA on all accounts also it is important to rotate(create new and delete old) access key periodically.
+
+Service 2 Billing and Cost Management:
+-important places to check Bills, Free tier, Budget.
+
+Service 3 EC2:
+-Once EC2 is created  after selecting the machine type, volume. Whatever shell script we want to run at the instantiation of the machine we can give that in UserData section. This will run only once when the machine is created.
+-States of EC2 pending,starting, Running, stopped, terminated(Deleted)
+-Public IP is used for connecting to server from external machines. Private IP is used between aws internal services to communicate faster.
+-Firewall settings or security settings are nothing but selecting which kind of network connections can be made to EC2 like whether to allow http or https or not whether to allow other IPs connect or not.
+-In a computer most important things are CPU(Computing), Memory(RAM),Storage(Hard disk) so covering all these we have various kinds of EC2 instance types like compute optimized, memory optimized, storage optimized and general type machines having all resources with equal optimization.
+-there are various websites which provides with all the types of machines there names, number of CPU's and number of processors,cost.
+-Security groups are nothing but the defined firewall rules to configure inbound and outbound network from and to to EC2 respectively.
+-Security groups can also can be configured whether other security groups can make and receive network connection or not from EC2.
+-Important ports to remember for exam, 22-Standard SSH, 21-FTP, 22-SFTP, 80-HTTP Unsecured websites, 443-HTTPS Secured websites,3389-RDP(Remote Desktop Protocol) login to windows remotely where as ssh is login to Linux remotely.
+-For any connection if we get connection timeout error then it is for sure security group issue. or else if we get another errors then it is like the connection entered the server but something is wrong inside. because the firewall security application and hardware is present outside the EC2 it is not installed inside EC2.
+-afer going into EC2 service scroll down the left menu until you find networks there you will find the security groups. it all about selecting which connnection type on which ip and which port.
+-there is one default VPC securtiy group which is created automatically to all the instances, in which all the traffic is enabled in inbound and outbound traffic. this configures network connections from and to between the EC2s within that VPC.
+-to make ssh into the ec2 we have many option like for mac, windows>10 we can directly use ssh -i {privatekeypath} ec2-user@ipaddress
+-but for windows<10 we need to use putty we need add key file in auth section of the putty key file must be .ppk format.
+-we can also connect to EC2 using EC2 instance connect option in the instances list it is browser based ssh shell.
+-we can create IAM roles for EC2 for each role we can give policies. the reason why we are giving roles to EC2 is, by default ec2 comes with pre installed aws cli. if we try to get aws iam list-users it will ask us to configure the account details like id and key file but it is a very very very bad practice to give our account id into the machine because someone else will be able to retrieve our account details. so to avoid this we can create one role for EC2 and assing IAMGetUsers policy to that role. so that ec2 will be directly able to access the iam list users. without need of human account.
+--ipv4 charges and ec2 purchase options are pending
+
+Service 4 EBS(Elastic Bean Store) Volumes:
+-this is one of the type of EC2 storages.
+-this is a network drive which acts as a local drive. we will attach EBS with EC2s.
+-the data will persist even if the EC2 is terminated(only when autodeletion of volume is disabled) so that we can attach this EBS to another EC2.
+-both EC2 and EBS must be created in same availability zone.
+-think of them like a network USB stick.
+-we can attach multiple EBS to one EC2 (all must be in same AZ) and usually one EBS can be attached to only one EC2 but with multi-attach we can attach multiple EC2 for one EBS.
+-To create EBS click on advanced in storage option while creating EC2 or click on volumes tab in EC2 navigation bar.
+-Snapshot is a backup of the EBS volume which can be created while  EC2 attached also but recommended to create snapshot while the EC2 is detached.
+-Create: Click of volume go to actions and click on creating snapshot to create one snapshot.
+-Volume: by default we can create volume directly from snapshot to any of the other availability zone.
+-Copy: by default we cannot create volume in another region from snapshot so we have the option to copy the snapshot to another region then we can create volume from that in any AZ.
+-Archive: snapshots are priced from the time they created even though they are being idle. to reduce pricing very much we have  archiving option where we can create  archive of snapshot which is priced very less but to recover from archive it takes takes 24 to 72 hours but Much cheaper (up to 75% savings)
+-Recycle Bin: we will have recycle bin interface in the snapshots if we go there we need to give recycle rule which defines how many days to retain the deleted snapshot or AMI. whenever a snapshot is deleted it will go to the recycle bin to prevent accidental deletion note that recycle bin is priced same as the normal snapshot price. thats why we will be able quickly recover it from recycle bin.recycle bins are used to store only two things AMI and Snapshots.
+-AMI: Amazon Machine Images are smart way to duplicate EC2's very fast. lets say we need to create a EC2 with apache server installed in it to this we need create EC2 instance while creating EC2 we need to give commands to install apache server in User Data. even after giving all these first it will create one root volume with all OS files then it will boot then it will install apache server then it will configure the server. this is very time taking process to speed up duplication of this EC2 once the instance started and  apache server running we will stop the instance right click on it and select option create image. image is nothing but copy of the exact configuration, softwares,state everything of EC2. very important thing is whenever EC2 is created EBS volume snapshots are also created. after creating the image we just need to go to images section click on the option for create instance from image. now the booting and start of apache server will be very very faster because we have the  snapshot will the required installed files.
+-AMI are region-scoped same like snapshots we can create instance in any az's within that region to create instance in another region we need to copy AMI to another region.
+-EC2 Instance Store: unlike network drive like EBS this is a hard drive volume attached inside the machine. we need to select the instance type with d letter in the name. when the ec2 is terminated the hard drive data is also lost so this is only suitable for temp data like cache. even though we select machine with instance store we will get one root volume attached with it.
+-EBS Volume types : there are 6 types
+-gp2/gp3 general purpose SSD volume balances price and performance for a wide variety of workloads.
+
+
+

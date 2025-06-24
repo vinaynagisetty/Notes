@@ -1,0 +1,64 @@
+Bean:
+-A java bean is a object of a bean class created by the container.
+-three ways to declare a class as a bean class to tell the container to manage it's object 1.XML bean tag, 2.@Component, 3.Java Based( @Configuration and @Bean).
+-to define parent Bean there are two ways in both the ways first we need to create parent bean 1. using parent attribute in @Bean, 2.using parent attribute in bean tag.
+-In order for a class to consider as a bean it must follow some rules like the class must be public, variables recommended to be private, methods must be public, either have no args constructor and getters and setters or parameterized constructor. like that so many are there.
+
+IOC Container:
+-we have two types of container 1. BeanFactory(XmlBeanFactory) 2.ApplicationContext(ClassPathXmlApplicationContext, FilePathXmlApplicationContext, AnnotationConfigApplicationContext) widely used is second one.
+
+Dependency Injection:
+-We will have three kind of depencies 1.Variable dependency, 2.Collection dependency, 3.Referency(Custom class) dependency.
+-There are three kinds of dependency injection 1.Constructor based, 2.setter based, 3.Field based.
+-When we give @Autowired on the constructor we are using constructor based annotation is going to happen.
+-When we use @Autowired annotation on a setter method setter based injection is going to happen.
+-when we declare @Autowired on the field Spring will first try to inject the dependency either by constructor or by setter if both are not available it is going to inject using reflection.
+-when multiple beans are found for the bean that needs to be injected to avoid exception we must use either @Qualifier or @Primary.
+-when the Bean is not available of the class which we are trying to inject to avoid exception we must use @Autowired(required=false).
+
+Bean Lifecycle management:
+-init() method runs after creating the bean
+-destroy() method runs before destruction of the bean
+-@PostConstruct, @PreDestroy
+
+Spring Boot:
+-Boots the spring application made spring application stand alone development very easily.
+-it has an embedded server.
+-it provides starters which helps in developing very fast with all components configured already which is nothing but autoconfiguration.
+
+Spring Boot features:
+-CommandLineRunner and ApplicationRunner when you want to run any code just after the spring application starts with the help of SpringApplication.run() method we can give that code by overriding the run() method of the CommandLineRunner and ApplicationRunner interfaces. if we want to order the execution between CommandLineRunner and ApplicationRunner we can use @Order annotation.
+-External Configurations can be done using YAML file,.properties file, environment variables, command line arguments. last one have the highest priority. an so on to the bottom to the left side.
+
+Spring Boot Profiles:
+-profiles helps to manage different different configurations for beans differently.
+-application.properties is the default profile,whatever profile is currently active application.properties loads in all the environments.
+-syntax for creating profile is application-<environment>.properties for ex. application-dev.properties, application-prod.properties
+-after creating all the files for all the enivronments in the default application.prooperties we need to define a property spring.profiles.active = prod like that.
+-there are so many other ways to call a particular profile.
+-when we want activate some Bean(Classes) for specific profile we need to define the class with @Profile("dev") on top of a class. which  will be managed by container only if that particular profile is active.
+-we can also  group multiple profiles  for different enivronments
+
+Spring Boot Annotations:
+-@Component,@Service,@Repository,@Bean,@Controller,@RestController
+-@Configuration,@ComponentScan
+-@Import when multiple classes are configured with @Configuration and if we need to use @Bean method from @Configuration class in another @Configuration class then we need to use @Import
+-@PropertySource other than application.properites if we want to give properties stored in someother locations then we can give the path to that properties file in this annotation.
+-@Value($somefieldfromapplication.properties:defaultValue) this is used to inject values into the properties these values are from application.properties file.
+-@SpringBootApplication is combination of @EnableAutoConfiguration,@ComponentScan,@Configuration
+-@EnableAutoConfiguration automatically configures and registers beans to the context of the classes which are there is in the classpath. we have two attributes to this annotation one exclude and another one is excludeNames both are for excluding the classes from auto configuration one for single classes the second one is for multiple classes.
+-@ConfigurationProperties is another way to inject properties in the variables other than @Value annotation. but with this annotation we can inject as a group. we can create one custom object with all the properties.
+
+Spring Boot security:
+-Authentication is checking the user with username and password
+-Authorization is checking whether particular user have role to access particular resource.
+-Servlet is nothing but just a class which receives http requests and sends http response it manages threads by itself, parses request by itself etc., lot other features that traditional http class.
+-Filter is like middlemen between client and servlet. Request comes to filter first before servlet response also comes to filter first before client.
+Browser --> Filter --> Servlet --> Response --> Filter --> Browser
+-filter can inspect or modify or block the request, filter can modify,inspect,block respose.
+-DelegatinFilterProxy is a Filter class provided by spring boot it delegates filter responsibility to a spring managed bean.
+-There are four important methods of Authorization 1.permitAll(), 2.authenticated(), 3.hasAuthority(), 4.hasAnyAuthority().
+-There are 3 ways to implement spring security 1.In-Memory Security(data is stored in RAM not suitable for prod apps data suitable for test and dev env retrieved and verified from RAM), 2.Using Database(JDBC)(Data is stored in DB but data is retrieved and verified using SQL queries), 3.Using UserDetailsService(data is stored in DB but data is retrieved and validated using ORM)
+
+
+

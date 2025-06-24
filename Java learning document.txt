@@ -1,0 +1,23 @@
+Java Data Types:
+
+* There are in total 8 java primitive data types. byte(1 byte), short(2 byte), int(4 byte), long(8 byte), float(4 byte), double(8 byte), char(2 byte), Boolean(1 byte).
+
+Java variables:
+
+* There are three types  of variables in java local, instance, static.
+* local variables must be initialised before using and instance variables are initialised by default on their own.
+* no access modifier or static status can be given local variables.
+* Local variables can be created with the same as instance variables this is called variable shadowing.
+* We cannot have two local variables with the same name.
+
+Java Operators:
+
+* Arithmetic operators : +, -, *, \, %
+* Unary operators : +(Converts byte, short, char to int), -(converts positive value to negative), ++(pre increment and post increment), --(pre decrement and post decrement). Pre means increments/decrements first and then use the value. Post means uses the value first and then inrements or decrements the value. ! flips the boolean value.
+* Assignment operator: =, +=,-=, *=, /=, %=, &=, |=, ^=, <<=, >>=, >>>=. all these are combinations with arthmetic, bitwise, logical operators with assignment operator. this means like for example f += 3 implies f = f+3. same for everything.
+*Relational operators: ==, !=, <, <=, >, >=.
+
+Java input :
+
+* java.util.Scanner is used. nextLine() for full line, next() for single words, nextInt() for whole words, nextDouble() for decimal numbers.
+* we can also take input from file and datastream  not only from the console.
