@@ -1,3 +1,13 @@
+
+JDK contains javac,jheap,jconsole etc., JRE. javac converts our source code in .java to .class and gives it to JRE to mix with .class files of java libraries.
+JRE contains .class files of java libraries and JVM. 
+JVM contains JIT which converts .class bytecode into native bits code. it takes .class files of java library and .class files of our code.
+another important task to JVM is memory management.
+JAR means .class files of our code and .class files of external libraries like spring or hibernate which are not included in standard java library so to run the jar we just need JRE no need of JDK because we don't need javac.
+to check whether JDK is installed use javac --version
+to check whether JRE is installed use java --version.
+we cannot install JVM alone either we can installed JDK which consists all are we can install JRE which will have JVM.
+
 Java Data Types:
 
 * There are in total 8 java primitive data types. byte(1 byte), short(2 byte), int(4 byte), long(8 byte), float(4 byte), double(8 byte), char(2 byte), Boolean(1 byte).
@@ -21,3 +31,61 @@ Java input :
 
 * java.util.Scanner is used. nextLine() for full line, next() for single words, nextInt() for whole words, nextDouble() for decimal numbers.
 * we can also take input from file and datastream  not only from the console.
+
+Java OOPS:
+
+
+In overloading:
+
+changing access modifier will not overload it will throw error.
+putting one as static and one as non static does not overload it gives error.
+we can achieve overloading by changing datatypes, count and order of method arguments.
+overloading is also called as static or compile time binding.
+
+In overriding:
+
+access modifier can be widened in child method.
+either both methods in parent and child can be static or both can be non static. one static one non static does not allow.
+when the method is static in parent it will not get overridden it gets hided. this is method hiding.
+return type can be narrowed in child method means sub class typed return type can be given child method.
+
+1.Child c = new Child()
+	Parent p = c; ( Up casting)
+	or Parent p = new Child() ( Up casting) that means with p we cannot access child methods
+one important thing here is eventhough we are unable to access child only methods for the methods which are overriddent child class we are going to overridden method behaviour
+2. Parent p = new Child()
+	Child c = (Child) p; ( Down casting) now you can access child methods from c.
+
+Abstract class:
+You cannot create object
+need to give abstract keyword for abstract methods.
+can have normal methods as usual.
+abstract methods are by default public.
+
+Interface;
+all mehthods are by default abstract no need to use abstract keyword..
+can have either static method or default method with default keyword.
+object cannot be created.
+
+Iterable:
+Contains forEach() method, any collection.iterator() is going to return one Iterator object which has 3 main methods, hasNext(), next(), remove().
+split iterator is used to split the collection into parts and do the parallel processing.
+
+Collection:
+this interface contains methods like add(), addAll(), remove(), set(), get().
+
+Collections class:
+this contains 3 main attributes EMPTY_SET, EMPTY_MAP, EMPTY_LIST.
+contains methods like sort(), reverse(), copy(), binarySearch(), max(), min() all are static methods.
+
+List:
+interface contains add(Object o) returns boolean,add(int index, Object o)-inserts in between returns void,set(index,element) return previous element*,indexOf(), lastIndexOf(),remove(index) returns Object, remove(Object) return boolean,get(),contains(), sublist()
+
+ArrayList:
+initial size if not specified is 10 and grows at 1.5x.
+
+LinkedList: bydefault we have doubly linked list in java.
+we can get one descending iterator which iterates in reverse order. also we can addFirst, removeFirst, offer(), peek(), element() returns head.
+
+Vector:
+it is exactly similar to arraylist this also uses array internally here also inital size after first add is 10 but in vector each time the array is full the vector doubles but arraylist grows by 50% also vector is thread safe that is why it is slow in single thread operations but arraylist is not thread safe.
