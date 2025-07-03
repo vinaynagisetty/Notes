@@ -25,12 +25,20 @@ Java Operators:
 * Arithmetic operators : +, -, *, \, %
 * Unary operators : +(Converts byte, short, char to int), -(converts positive value to negative), ++(pre increment and post increment), --(pre decrement and post decrement). Pre means increments/decrements first and then use the value. Post means uses the value first and then inrements or decrements the value. ! flips the boolean value.
 * Assignment operator: =, +=,-=, *=, /=, %=, &=, |=, ^=, <<=, >>=, >>>=. all these are combinations with arthmetic, bitwise, logical operators with assignment operator. this means like for example f += 3 implies f = f+3. same for everything.
-*Relational operators: ==, !=, <, <=, >, >=.
+*Relational operators or comparing: ==, !=, <, <=, >, >=.
+*logical operators : &&, ||, !.
+*ternary operator : ? :
+*bitwise operator:
+*
 
 Java input :
 
 * java.util.Scanner is used. nextLine() for full line, next() for single words, nextInt() for whole words, nextDouble() for decimal numbers.
 * we can also take input from file and datastream  not only from the console.
+
+String is immutable  works with the help of pool.
+StringBuilder is mutable will be able to remove, insert but it not threadsafe.
+StringBuffer is same as builder but is thread safe so slower comparatively.
 
 Java OOPS:
 
@@ -65,6 +73,10 @@ abstract methods are by default public.
 Interface;
 all mehthods are by default abstract no need to use abstract keyword..
 can have either static method or default method with default keyword.
+
+Enum:
+enum is also like a class which is going to have constant values as attributes.
+
 object cannot be created.
 
 Iterable:
@@ -79,13 +91,59 @@ this contains 3 main attributes EMPTY_SET, EMPTY_MAP, EMPTY_LIST.
 contains methods like sort(), reverse(), copy(), binarySearch(), max(), min() all are static methods.
 
 List:
+can be assumed like nagarjuna's cycle chain  in "Shiva"
 interface contains add(Object o) returns boolean,add(int index, Object o)-inserts in between returns void,set(index,element) return previous element*,indexOf(), lastIndexOf(),remove(index) returns Object, remove(Object) return boolean,get(),contains(), sublist()
 
 ArrayList:
-initial size if not specified is 10 and grows at 1.5x.
+initial size if not specified is 10 and grows at 1.5x.internally uses  arrays.
 
 LinkedList: bydefault we have doubly linked list in java.
 we can get one descending iterator which iterates in reverse order. also we can addFirst, removeFirst, offer(), peek(), element() returns head.
 
 Vector:
 it is exactly similar to arraylist this also uses array internally here also inital size after first add is 10 but in vector each time the array is full the vector doubles but arraylist grows by 50% also vector is thread safe that is why it is slow in single thread operations but arraylist is not thread safe.
+
+CopyOnWriteArrayList:
+thread safe. new array list is created each time a write  or readd operation happens.
+
+Stack:
+push(), pop(), peek(), search(), empty() last in first out.LIFO.
+
+AbstractCollection, AbstractList, AbstractSequentialList : abstract means which can't be modified means you cant addd or delete. sequential means in order you need to operate like linked list.
+
+
+Set: unordered.means you will not be sure what you are going to get next. complete random order storage and random order retrieval. cannot allow duplicated elements. can  be assumed like stones poured in  a circle.
+
+HashSet:
+allows no duplicates it allows one null value main advantage is adding,removing,contains is O(1) because of hashing. it internally uses hashmap and as we all know hashmap works on hashtable internally.
+
+TreeSet:
+elements are  store in a tree map in ascending by default. getting elements  is logarthmic time complexity.
+
+LinkedHashSet:
+insertion order is maintained using LinkedHashMap internally.
+
+Map: seperate interface from Collection. used to store Key value pair.
+
+Multithreading:
+we have Thread class to start the thread but we also have Runnable interface this is introduced becuase if a class extends Thread class it cannot extend any other class so Runnabe interface is created so that a class can implement it other classes can also be extended.
+Thread states: New, Runnable, Blocked(waiting for the lock), waiting, timed waiting, terminated. Thread.getState() will give these ENUMS.
+as soon as the main() method starts main thread is going to get started. default priority for main thread is 5.
+Thread scheduler assigns processors to threads based on the priority.
+Thread pool: ThreadPoolExecutor class implements ExecutorService interface which extends Executor interface. Executors interface will have 3 main methods newFixedThreadPool(int n), newCachedThreadPool(), newSingleThreadExecutor(). Fixed thread pool creates exact number of threads specified
+
+Java generics:
+
+Type parameter ex., T,E,N,S,U,V,K,V
+Making a class of method generic means making the method flexible to use any kind of object. to make the class or method flexible we should mention the type with  letters like T, E etc., but to use them inside the class of method we should first declare them or activate them by mentioning before a method name in diamond operation or after the class name in diamond operator.
+
+Wild card ?;
+as we saw earlier to use a type parameter like T, E, N we should first define it inside diamond operator<> where as if use a wild card we don't have to declare it earlier we can directly use it wild card is mostly used for bounded types. bounded means we restrict  the allowed types.
+
+Upper boud:
+upper bound is achieved  by using syntax like (? extends  Number) or (T extends Number)
+above upper bound syntax means we can uses the classes of Number typed or the class below  the Number type means the classes which extends Number  type like Integer, Float,Double.
+
+Lower bound:
+upper bound is achieved  by using syntax like (? super  Number) or (T super Number)
+above upper bound syntax means we can uses the classes of Number typed or the class below  the Number type means the classes which extends Number  type like Integer, Float,Double.
