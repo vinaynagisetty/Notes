@@ -132,6 +132,17 @@ as soon as the main() method starts main thread is going to get started. default
 Thread scheduler assigns processors to threads based on the priority.
 Thread pool: ThreadPoolExecutor class implements ExecutorService interface which extends Executor interface. Executors interface will have 3 main methods newFixedThreadPool(int n), newCachedThreadPool(), newSingleThreadExecutor(). Fixed thread pool creates exact number of threads specified
 
+Thread.sleep() is used to make the current thread wait for specified amount of time two overloaded versions available one in milliseconds one in nano seconds.
+
+when we call Thread.interrupt() to interrupt a th read if the thread is sleeping or waiting it is going to throw interrupted exception or else if the thread is normally running calling interrupt method is  just going to make the interupted flag to true. we use interruption when we want to cancel the thread execution.
+
+threadobj.join(): The join method allows one thread to wait for the completion of another. If t is a Thread object whose thread is currently executing,
+
+t.join();
+causes the current thread to pause execution until t's thread terminates. Overloads of join allow the programmer to specify a waiting period. However, as with sleep, join is dependent on the OS for timing, so you should not assume that join will wait exactly as long as you specify.
+
+Thread interfearence occurs when two threads access the same object at a time and do changes in that object both at a time.
+
 Java generics:
 
 Type parameter ex., T,E,N,S,U,V,K,V
@@ -141,9 +152,12 @@ Wild card ?;
 as we saw earlier to use a type parameter like T, E, N we should first define it inside diamond operator<> where as if use a wild card we don't have to declare it earlier we can directly use it wild card is mostly used for bounded types. bounded means we restrict  the allowed types.
 
 Upper boud:
-upper bound is achieved  by using syntax like (? extends  Number) or (T extends Number)
+upper bound is achieved  by using syntax like (? extends Number) or (T extends Number)
 above upper bound syntax means we can uses the classes of Number typed or the class below  the Number type means the classes which extends Number  type like Integer, Float,Double.
 
 Lower bound:
-upper bound is achieved  by using syntax like (? super  Number) or (T super Number)
-above upper bound syntax means we can uses the classes of Number typed or the class below  the Number type means the classes which extends Number  type like Integer, Float,Double.
+lower bound is achieved  by using syntax like (? super  Integer) or (T super Integer)
+above upper bound syntax means we can uses the classes of Integer typed or the class above  the Integer type means the classes which are parents of Integer  type like Integer, Number,Object.
+
+Type erasuer:
+means during compilation based on the type you pass in to a generic method or class the compiler is going to replace the generic type with the type you pass while compiling.
