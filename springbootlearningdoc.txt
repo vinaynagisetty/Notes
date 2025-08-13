@@ -50,9 +50,10 @@ Spring Boot Annotations:
 -@ConfigurationProperties is another way to inject properties in the variables other than @Value annotation. but with this annotation we can inject as a group. we can create one custom object with all the properties.
 
 Spring Boot security:
+-Spring security is all about authentication and authorization.
 -Authentication is checking the user with username and password
 -Authorization is checking whether particular user have role to access particular resource.
--Servlet is nothing but just a class which receives http requests and sends http response it manages threads by itself, parses request by itself etc., lot other features that traditional http class.
+-Servlet is nothing but just a class which receives http requests and sends http response it manages threads by itself, parses request by itself etc., lot other features than traditional http class.
 -Filter is like middlemen between client and servlet. Request comes to filter first before servlet response also comes to filter first before client.
 Browser --> Filter --> Servlet --> Response --> Filter --> Browser
 -filter can inspect or modify or block the request, filter can modify,inspect,block respose.
@@ -60,5 +61,197 @@ Browser --> Filter --> Servlet --> Response --> Filter --> Browser
 -There are four important methods of Authorization 1.permitAll(), 2.authenticated(), 3.hasAuthority(), 4.hasAnyAuthority().
 -There are 3 ways to implement spring security 1.In-Memory Security(data is stored in RAM not suitable for prod apps data suitable for test and dev env retrieved and verified from RAM), 2.Using Database(JDBC)(Data is stored in DB but data is retrieved and verified using SQL queries), 3.Using UserDetailsService(data is stored in DB but data is retrieved and validated using ORM)
 
+we all know that filter acts as middlemen for every request that is coming to implement a customer filter our class must implement Filter interface but see if you register multiple Filters of your own in spring security it will be difficult for the spring to manage all the filter individually so we have a FilterChainProxy which will act as one single Filter for the entire application which is directly registered with the server it acts as a wrapper for the all the internal filters.this FilterChainProxy contains one SecurityFilterChain typed object which is the main filter chain that will contain all the spring provided filters internally like SecurityContextPersistenceFilter, WebAsyncManagerIntegrationFilter, BasicAuthenticationFilter etc.,
+as a List<Filter>. we can register our custom filters also with this SecurityFilterChain we just have to extend OncePerRequestFilter for our custom filter than we will add this custom filter to our SecurityFilterChain. this OncePerRequestFilter is a utility class which ensures this filter is called only once because calling the filer multiple times is not at all good.
 
+public class MyCustomFilter extends OncePerRequestFilter {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain)
+        throws ServletException, IOException {
+        // Pre-processing logic
+        System.out.println("Custom filter: " + request.getRequestURI());
+        filterChain.doFilter(request, response);
+        // Post-processing logic
+    }
+}
+@Configuration
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(new MyCustomFilter(), UsernamePasswordAuthenticationFilter.class) // 👈 Register here
+            .formLogin();
+        return http.build();
+    }
+}
+
+Spring Boot Startup
+   ↓
+Spring Context initialized
+   ↓
+Bean creation phase
+   ↓
+Finds your @Configuration class
+   ↓
+Calls your `filterChain(HttpSecurity)` method
+   ↓
+Registers the returned SecurityFilterChain
+   ↓
+Adds it to FilterChainProxy
+   ↓
+Security filter chain is ready to intercept requests
+
+the method name can be anything here not only filterChain(HttpSecurity) if we define two bean methods for SecurityFilterChain we must use @Order(1)  and @Order(2) to tell which to call first.
+Incoming Request
+     ↓
+[ Servlet Filter Chain ]
+     ↓
+[ FilterChainProxy (Spring Security) ]
+     ↓
+→ SecurityFilterChain 1 (if matches URL pattern)
+   - CsrfFilter
+   - MySecurityFilter (your filter)
+   - UsernamePasswordAuthenticationFilter
+   - ...
+→ SecurityFilterChain 2 (if another URL matches)
+   - other filters
+https://medium.com/@ihor.polataiko/spring-security-guide-part-1-introduction-c2709ff1bd98
+if we write a custom filter by extending traditional Filter class this filter will be registered outside of spring security filter system(FilterChainProxy) our filter will run either before or after Spring Security filters → You lose ordering control inside the SecurityFilterChain.
+
+401 Unauthorized
+403 Forbidden
+
+spring security is all about building SecurityFilterChain defining what are all the filters you want to use and providing resources to those filters. HttpSecurity DSL is called the builder of the SecurityFilterChain that is why we use http.build() in the end.
+
+Spring boot REST: rest is representational state transfer we are transferring state means data by following representations.
+
+REST applications can be either producer like building API's or consumers like React application, Angular application or Java Based REST application.
+First we need to write application.properties
+JDBC driver is like bridge between java app and db so that sql from java can enter into DB.
+hibernate dialect is kind of a machine which generates sql queries from java methods instead of writing them manually.
+hibernate-------------->SQL QUERIES----------------->DB
+           (Dialect)		     (JDBC driver)
+if we are not using hibernate we write sql queries on our own and pass them to db via driver.
+spring.jpa.hibernate.ddl-auto=update/none/create/validate/create-drop/auto
+
+after writing application.properties we need to create Entity using @Entity annotation
+
+UUID (Universally Unique Identifier)
+@GeneratedValue
+private UUID id
+
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+Strategy	Description			Database Support	ID Assigned
+IDENTITY	Uses DB auto-increment		MySQL, PostgreSQL	After Insert
+SEQUENCE	Uses a DB sequence object	Oracle, PostgreSQL	Before Insert
+TABLE		Uses a separate table for IDs	Any (legacy fallback)	Before Insert
+AUTO		default based on DB		All			Varies
+
+ex.
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String number;
+    private String status;
+    private Double amount;
+    private LocalDate createdDate;
+
+after that we need to create a repository using @Repository
+
+by default when we define one repository we get below methods:
+
+Optional<Invoice> findById(Long id);
+List<Invoice> findAll();
+Invoice save(Invoice invoice);
+void deleteById(Long id);
+void delete(Invoice invoice);
+boolean existsById(Long id);
+long count();
+List<Invoice> findAll(Sort sort);
+Page<Invoice> findAll(Pageable pageable);
+
+any other methods like find by status or findby name we need to define separately to define separate methods we have lot of ways.
+
+1.Automatic Derived query by spring, here you just have mention the method name spring creates the query automatically for you by using reflection api. this will work only for simple select queries cannot use for update methods. please examples below please remember this style will work only for simple select queries.
+
+List<Invoice> findByStatus(String status);
+Invoice findByNumber(String number);
+List<Invoice> findByAmountGreaterThan(Double amount);
+List<Invoice> findByStatusAndAmountLessThan(String status, Double amount);
+
+we get the implementation automatically no need to define using @Query or anything.
+
+2. by using @Query in combination with JPQL( Java Persistence Query Language) we must use @Param inside method arguments to map the arguments with params in jpql. by default spring assumes @Query is select query so if you are creating query to update or delete something you must use @Modifying annotation. please see jpql syntax below.
+SQL Concept	JPQL Equivalent
+SELECT *	SELECT i
+Table name	Java Entity class name
+Column name	Java field name
+JOIN tables	Use entity field and mapped relation
+Table alias	Entity alias (e.g., i in Invoice i)
+
+simple jpql example
+
+@Modifying
+@Query("UPDATE Invoice SET number=:number WHERE id=:id")
+Integer updateInvoiceNumberById(String number,Long id);
+
+if you want to map the result from DB to custom DTO then you need to use below syntax.
+ @Query("SELECT new com.example.dto.InvoiceDTO(i.id, i.number, i.amount) " +
+           "FROM Invoice i WHERE i.status = :status")
+    List<InvoiceDTO> findInvoicesByStatus(@Param("status") String status);
+
+
+2. by using native sql query inside @Query, instead of using jpql we can use normal SQL. not much used.
+
+3. by using stored procedure written in DB. to use stored procs also we have two ways  @Procedure(name = "get_total_invoices_by_status") simple and straight forward @NamedStoredProcedureQuery little advanced but more helpful and controllable.
+
+though these are the 3 main examples for writing custom methods we have 3 more methods one is using Specification class, other one is using Example class and another way is by defining method from scratch with writing criteria and all with a query like traditional hibernate using entity manager.
+
+after creating an entity we need to create a service interface to ctreate more sensible meethods after that we need to create serviceimplements class. reason is sevice interface can be used to create mock objects using Mockito.
+
+after that create a ErrorDTO class this is nothing but a general class but very much used in modern excetption handling to prevent exposing of application information in the errors also to simplify error handling with custom error statuses like INV_004. most important fields in error dto are timestamp, status code, message.
+public class ErrorType {
+	private String time;
+	private String status;
+	private String message;
+} no need to annotate with special thing.
+
+after this create your custom exceptions by extending RuntimeException to throw in the controllers and handle them using ErrorDTO's in controller Advice.
+
+@RestControllerAdvice
+public class InvoiceErrorHandler {
+@ExceptionHandler(InvoiceNotFoundException.class)
+	public ResponseEntity<ErrorType> handleNotFound(InvoiceNotFoundException nfe){
+		
+		return new ResponseEntity<ErrorType>(
+				new ErrorType(
+						new Date(System.currentTimeMillis()).toString(), 
+						"404- NOT FOUND", 
+						nfe.getMessage()), 
+				HttpStatus.</yoastmark>NOT_FOUND);
+	}
+
+
+
+after that create a controller class using @RestController annotation. this is similar to @Controller only thing is with @Controller you will get @ResponseBody annotation to tell to spring that the api must return a json ResponseEntity<T> with Headers, Satus code, Body not a view name.
+
+For any RestController the return type is a ResponseEntity<T> as i said above this is a combination of Header, Status, Body there are variour ways to send this ResponseEntity, T is the Body type.
+
+HttpHeaders headers = new HttpHeaders();
+headers.add("X-Custom-Header", "value");
+return ResponseEntity.ok().headers(headers).body(invoice);
+
+ResponseEntity.ok(invoice);
+
+ErrorDTO error = new ErrorDTO("Invoice not found", "INV_404");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+
+return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+while building controller we must enclose all the controller implementation inside try catch to throw custom exceoptions and to handle the exceptions properly to display the exceptions properly.
 

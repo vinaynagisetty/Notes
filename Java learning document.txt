@@ -6,7 +6,7 @@ another important task to JVM is memory management.
 JAR means .class files of our code and .class files of external libraries like spring or hibernate which are not included in standard java library so to run the jar we just need JRE no need of JDK because we don't need javac.
 to check whether JDK is installed use javac --version
 to check whether JRE is installed use java --version.
-we cannot install JVM alone either we can installed JDK which consists all are we can install JRE which will have JVM.
+we cannot install JVM alone either we can installed JDK which consists or are we can install JRE which will have JVM.
 
 Java Data Types:
 
@@ -45,8 +45,8 @@ Java OOPS:
 
 In overloading:
 
-changing access modifier will not overload it will throw error.
-putting one as static and one as non static does not overload it gives error.
+changing access modifier will not overload we will get compile time error.
+putting one as static and one as non static does not overload it give compoile time error.
 we can achieve overloading by changing datatypes, count and order of method arguments.
 overloading is also called as static or compile time binding.
 
@@ -55,15 +55,18 @@ In overriding:
 access modifier can be widened in child method.
 either both methods in parent and child can be static or both can be non static. one static one non static does not allow.
 when the method is static in parent it will not get overridden it gets hided. this is method hiding.
-return type can be narrowed in child method means sub class typed return type can be given child method.
+return type can be narrowed in child method means sub class typed return type can be given child method. this is called covariant return type.
 
 1.Child c = new Child()
 	Parent p = c; ( Up casting)
 	or Parent p = new Child() ( Up casting) that means with p we cannot access child methods
-one important thing here is eventhough we are unable to access child only methods for the methods which are overriddent child class we are going to overridden method behaviour
+one important thing here is eventhough we are unable to access child only methods, for the methods which are overridden by child class we are going to get overridden method behaviour with p this is what is helping to give multiple implementations to one class like
+ ApplicationContext context = new ClassPathXMLApplicationContext() or 
+ApplicationContext context = new AnnotationBasedApplicationContext()
 2. Parent p = new Child()
 	Child c = (Child) p; ( Down casting) now you can access child methods from c.
-
+	because even though Child is becoming parent here somewhere the child behaviour still persists in p reference.
+	Before using downcasting we must use instanceof operator other wise we will get Class Cast error exception.
 Abstract class:
 You cannot create object
 need to give abstract keyword for abstract methods.
@@ -72,11 +75,10 @@ abstract methods are by default public.
 
 Interface;
 all mehthods are by default abstract no need to use abstract keyword..
-can have either static method or default method with default keyword.
+can have either static method or default method with default keyword. static is used for the methods which we do not want to override becuase they get hided. default we will use for default as usual methods.
 
 Enum:
 enum is also like a class which is going to have constant values as attributes.
-
 object cannot be created.
 
 Iterable:
@@ -104,10 +106,10 @@ Vector:
 it is exactly similar to arraylist this also uses array internally here also inital size after first add is 10 but in vector each time the array is full the vector doubles but arraylist grows by 50% also vector is thread safe that is why it is slow in single thread operations but arraylist is not thread safe.
 
 CopyOnWriteArrayList:
-thread safe. new array list is created each time a write  or readd operation happens.
+thread safe. new array list is created each time a write  or remove operation happens.
 
 Stack:
-push(), pop(), peek(), search(), empty() last in first out.LIFO.
+push(), pop(), peek(), search(), empty() last in first out LIFO.
 
 AbstractCollection, AbstractList, AbstractSequentialList : abstract means which can't be modified means you cant addd or delete. sequential means in order you need to operate like linked list.
 
@@ -124,6 +126,11 @@ LinkedHashSet:
 insertion order is maintained using LinkedHashMap internally.
 
 Map: seperate interface from Collection. used to store Key value pair.
+
+We have implementations like HashMap, LinkedHashMap, TreeMap. Linked HashMap maintaines order by storing two extra pointers named before and after which will point to the nodes which got inserted before and after this element. along with before and after one more pointer named next is stored which will point to the next node of the linked there in current index because if any collision occurs we have to attach the key to node to this next pointer. So by introducing before and after in LinkedHashMap we are additionally using a DoublyLinkedList inside.
+
+Que: we have implementation classes like AbstractQueue, ArrayBlockingQueue, ArrayDeque, ConcurrentLinkedDeque, ConcurrentLinkedQueue, DelayQueue, LinkedBlockingDeque, LinkedBlockingQueue, LinkedList, LinkedTransferQueue, PriorityBlockingQueue, PriorityQueue, SynchronousQueue. abstract means it will not store any element but provides implementation for basic methods. ArrayDeque means it uses tradition array inside it exapnds as per filage deque means double ended que so we can add and remove elements from start and from end.
+ArrayBlockingQueue means same likee arraydeque but blocking means if the que is full until the array have space thread will block means it will wait then it will make entry. Priority que means we can pass our custom comparator or based on natural ordering priority is given and element with highest priority will be removed first like emergency case in hospitals.*
 
 Multithreading:
 we have Thread class to start the thread but we also have Runnable interface this is introduced becuase if a class extends Thread class it cannot extend any other class so Runnabe interface is created so that a class can implement it other classes can also be extended.
@@ -143,6 +150,18 @@ causes the current thread to pause execution until t's thread terminates. Overlo
 
 Thread interfearence occurs when two threads access the same object at a time and do changes in that object both at a time.
 
+when two threads are trying to accesss the Counter c object at a time increment and decrement can happen at the same time which will lead to memory inconsistency and interfearence. Synchronization is the solution for this.
+Synchronisation is achieved in two ways Synchronized methods, Synchronized statements.
+For synchronised methods you just mention synchronised after access modifer and this method can only be run by one method at a time.
+Synchronized statements are achieved by using synchronized blocks where we need to pass the object which is going to be used as a lock which gets exchanged between threads as key to acess synchronized statements.
+Generally threads will cache the value of variables for faster access so when one thread changes value it will not be visible to another thread thats why we use the keyword volatile infront of variables to make it atomic and it tells the thread to not to cache the value.
+deadlock is a situation where both threads are waiting for completion of other thread.
+starvation means waiting long time for the access to synchronised method.
+livelock is similar to deadlock if one thread action makes another thread do some action on this thread it will call live lock because both the threads will be busy responding to each other. they will not be dead that is why it is live lock not deadlock.
+when we make a thread wait using wait() function we should resume the execution using notify() method.
+These are all the basic thread api concepts now lets see concepts which are introduced in later verisons of java after 1.5
+Instead of using our own objects as locks Lock class has been introduced with custom enhanced methods to maintain locks.
+
 Java generics:
 
 Type parameter ex., T,E,N,S,U,V,K,V
@@ -161,3 +180,240 @@ above upper bound syntax means we can uses the classes of Integer typed or the c
 
 Type erasuer:
 means during compilation based on the type you pass in to a generic method or class the compiler is going to replace the generic type with the type you pass while compiling.
+
+
+
+Stream api 
+
+We have Collection, Collectors, Collections.
+Collection is an interface, parent for List Set Que.
+ Collections class is utility class which contains methods like below this class is present java.util.Collections
+sort(List<T> list)
+reverse(List<?> list)
+max(Collection<? extends T>)
+min(Collection<? extends T>)
+synchronizedList(List<T>)
+unmodifiableList(List<T>)
+
+Collectors is also a utility class which is introduced in stream api which contains methods like below this is present in java.util.Collectors
+toList()
+toSet()
+toMap()
+joining()
+counting()
+groupingBy()
+partitioningBy()
+summarizingInt()
+
+best resource https://www.digitalocean.com/community/tutorials/java-8-stream#create-stream
+
+Creating a stream:
+
+Stream<Integer> stream = Stream.of(1,2,3,4);
+Stream<Integer> stream = Stream.of(new Integer[]{1,2,3,4}); 
+//works fine
+//Compile time error, Type mismatch: cannot convert from Stream<int[]> to Stream<Integer>
+
+List<Integer> myList = new ArrayList<>();
+//sequential stream
+Stream<Integer> sequentialStream = myList.stream();
+
+//parallel stream
+Stream<Integer> parallelStream = myList.parallelStream();
+
+Stream<String> stream1 = Stream.generate(() -> {return "abc";}); //generates infinite stream
+
+Stream<String> stream2 = Stream.iterate("abc", (i) -> i);//this also generates infinite stream.
+
+LongStream is = Arrays.stream(new long[]{1,2,3,4});// here we can use primitives because Long stream is specially introduced to operate on primitives
+
+IntStream is2 = "abc".chars();
+
+For Map objects we cannot create stream() directly because Map is not extending Collection. to get the stream() from Map objects we need to use entrySet() or keySet() or values().
+keySet() only returns keys values() returns only values. entrySet().getKey() is going to return key and entrySet.getValue() is going to return value.
+
+Terminal operations:
+
+forEach() : returns void
+for List, Set, Que : pl.stream().forEach(p -> System.out.println(p));
+for Map: students.entrySet().stream().forEach(e -> System.out.println("Iam " + e.getValue() + " my id is "+ e.getKey()));
+
+collect(): return Collection or Map
+for List, Set, Que 
+for Map students.entrySet().stream().filter(e -> e.getKey() < 3).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+
+
+findFirst(): returns Optional. no argument it allows just returns first object of stream.
+System.out.println(pl.stream().findFirst().get().toString());
+System.out.print(students.entrySet().stream().filter(e -> e.getKey() < 3).findFirst().get().toString());
+
+toArray(): return Object[]**
+Person[] personNewArray =  pl.stream().toArray(Person[] :: new);
+
+min(), max(): returns Optional as we discussed any terminal which is expected to return only one object will return an Optional.
+we need to pass our comparator into these functions to find the max or min element from the list.
+System.out.println(listemp.stream().max(Comparator.comparing(Employee::getSalary)).get().toString());
+
+allMatch(): this is a terminal operation which returns a boolean value input to this function is a predicate if all the elements of the stream are matching the predicate condition then this returns true even if one not matching then returns true.
+
+anyMatch(): returns boolean input is predicate returns true even if one element is satisfying the predicate condition.
+
+noneMatch(): returns boolean input is predicate returns true only if no element is satisfying the predicate condition.
+
+collect(Collectors.joining()): 
+List.of("Vinay", "Java", "Stream");
+list.stream().collect(Collectors.joining());// VinayJavaStream
+
+collect(Collectors.joining(", "))://joining(delimiter)
+list.stream().collect(Collectors.joining(", "));// Vinay, Java, Stream
+
+collect(Collectors.joining(", ", "[", "]")): //joining(delimiter, prefix, suffix)
+list.stream().collect(Collectors.joining(", ", "[", "]"));// [Vinay, Java, Stream]
+
+reduce(intialValue,BinaryOperator<T>, accumulator(BiFunction)):
+reduce also returns Optional as it returns only one single value if we don't pass initial value then it will return optional.
+
+Optional<T> reduce(BinaryOperator<T> accumulator): 
+When you want to reduce without an initial value
+ BinaryOperator is also a Functional Interface same like BiFunction, Predicate the rule here is it should take two same kind of object and return one same type object.
+List<Integer> nums = List.of(1, 2, 3);
+Optional<Integer> result = nums.stream().reduce((a, b) -> a + b);
+
+T reduce(T identity, BinaryOperator<T> accumulator):
+You want a non-optional result (always returns something)
+int sum = List.of(1, 2, 3).stream().reduce(0, Integer::sum);
+
+<U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner):
+this we use when operating on parallel streams
+
+.collect(Collectors.summarizingDouble(Employee::getSalary)):
+this returns a  DoubleSummaryStatistics stats on which we can use stats.getCount(), stats.getSum(), stats.getMin(), stats.getMax(), stats.getAverage();
+
+if we are using IntStream or DoubleStream or LongStream we can use one method summaryStatistics() directly on the stream we don't need to pass any method reference this also same like above returns one stats reference.
+
+intermeadiate operations:
+
+map(): return stream
+for List, Set, Que  pl.stream().map(p ->{ p.setCity(p.city+" added"); return p;} ).forEach(System.out::println);
+for map students.entrySet().stream().map(e -> {e.setValue(e.getValue()+"added");return e.getKey() + " "+ e.getValue();}).forEach(System.out::println);
+
+filter(): returns stream 
+pl.stream().map(p ->{ p.setCity(p.city+" added"); return p;} ).collect(Collectors.toMap(p -> p.city, p -> p.state));
+students.entrySet().stream().filter(e -> e.getKey() < 3).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())); 
+
+flatMap(): returns one single stream, it is used to return single stream from stream of streams or List of Lists or List of Maps.
+it takes one function as input this function must return a stream not any object.
+List<Map<Integer,String>> students = new LinkedList<>();Map<Integer,String> m1 = new HashMap<>();m1.put(1, "Vinay");m1.put(2, "Kiran");
+Map<Integer,String> m2 = new HashMap<>();m2.put(3, "Vamsi");m2.put(4, "Krishna");students.add(m1);students.add(m2);
+students.stream().flatMap(m -> m.entrySet().stream()).forEach(e -> System.out.print(e.getKey() + " " + e.getValue()));
+
+peek() : this is a very similar operation to forEach() it also takes consumer as input but the main difference is this is not a terminal operation so you can continue operating on the stream.
+
+mapToInt() mapToLong() mapToLong() the function which we pass into these methods must return data type of respective function name like int, long, Double. List<String> numbersAsString = Arrays.asList("10000000000", "20000000000");
+LongStream longStream = numbersAsString.stream()
+                                       .mapToLong(Long::parseLong);
+if you observe map() function is very similar to mapToInt() but the reason why we have introduced mapToInt is mapToInt under the hood works with primitive int types it avoids overhead of boxing. where as map() under the hood works with boxed objects so when working with primitives maptToInt is faster.
+
+same like mapToInt() we also have flatMapToInt() flatMapToLond() flatMapToDouble() which works exactly like flatMap() returns single stream from multiple streams but same like above this also works with primitives so this avoids overhead of boxing.
+
+mapMulti(): this does exactly same job like flatMap where it creates single stream from multiple objects but the catch here is unlike flatMap() we don't have to return stream from each element rather we pass each element into a consumer object using .accept() function which will push each element to the final stream. This function is introduced in Java 9 this is efficent that flatMap().
+
+Stream.of(1, 2, 3).<String>mapMulti((number, consumer) -> {
+    consumer.accept(number + "a");
+    consumer.accept(number + "b");
+  }).forEach(System.out::println);
+similar to this we also have mapToMultInt() mapToMultiDouble() 
+
+One of the great features of stream is all the intermeadiate operations are lazy in evaluation. they only does the operation when the terminal operation really needs that example.
+for example lets say you are operating on a stream with a map function first then a findFirst() operation then for the first element from the stream the intermeadiate method map works because collector method findFirst is demanding one element. after that findFirst() will not need elements any more so no computation will happen on rest of the elements this saves lot of computation time. operation in stream api happens one by one.
+
+**** Any terminal operation which returns only one element will return an Optional in stream API. Like min(), max(), findFirst()
+
+Comparable and Comparator:
+
+in Stream API we have many functions which requires comparator as input like sorted(), min(), max() also in Collections we have static method called sort() we must either pass a comparator into this method or the element of collection must implement Comparable interface.
+
+Comparable is a Functional interface with only one abstract method int compareTo(T t) there are no default or static methods when we have one single comparision logic for the object which we use in all the places in the code then we can implement this comparable and override the comparingTo(T t) method. String, Integer*, Double, LocalDate, BigDecimal by default implement this Comparable. We will use this for the Natural ordering like albhabtically, lexographically, numerically etc.,
+
+public class Employee implements Comparable<Employee> {
+    // Natural sorting: by name
+    @Override
+    public int compareTo(Employee other) {
+        return this.name.compareTo(other.name);
+    }}
+
+Comparator is also a functional interface with one abstract method int compare(T t, U u) but we have 2 default and 4 static methods.
+
+public interface Comparator<T> {
+    int compare(T o1, T o2); // Primary method
+
+    // Default methods
+    static <T> Comparator<T> reverseOrder(); // Reverses natural order
+    static <T,U extends Comparable<? super U>> Comparator<T> comparing(Function<T,U> keyExtractor)
+    default Comparator<T> reversed()
+    default Comparator<T> thenComparing(Comparator<? super T> other)
+    static <T> Comparator<T> nullsFirst(Comparator<T> cmp)
+    static <T> Comparator<T> nullsLast(Comparator<T> cmp)
+}
+
+if you want to give multiple comparing logics for one element in multiple places in the codebase we should consider using Comparator. if we want to use completely custom comapring logic then we override compare method or if we want to use natural comparing we should use comapring() method we can also chain comparing logic using thenComparing() method.
+to comparing and thenComparing() method the argument we must pass is a function which return a object which have extended comparable like below example
+list.sort(Comparator.comparing(Employee::getName).thenComparing(Employee::getId));
+Sort by ID in descending order: list.sort(Comparator.comparing(Employee::getId).reversed());
+Handle null values safely: list.sort(Comparator.nullsLast(Comparator.comparing(Employee::getName)));
+Example: Multiple Comparators for Same Class
+Comparator<Employee> byName = Comparator.comparing(e -> e.name);
+Comparator<Employee> byId = Comparator.comparingInt(e -> e.id);
+Comparator<Employee> byNameThenId = byName.thenComparing(byId);
+
+sorted(Comparator<T>):
+sorts the elements of the stream according to the comparator passed for this function lazy evaluation is not that valid because we need to sort first before doing any other operation.
+listemp.stream().sorted(Comparator.comparing(Employee::getName)).forEach(System.out::print);
+
+distinct(): returns a stream after removing all the duplicate elements uses equals() method to compare whether elements are same or not.
+distinct internally uses HashSet to get the unique elements as we all know HashSet first calculate hash of the object to see if any object is already there in the bucket if no object is there then it will push the object if any object already present then it will use equals() method to know whether both the objects are same or not. so if we are only overriding equals method and if we are not overloading hashcode() method. distinct can think same objects as different objects becuase their hash might not be same. By the way both equals and hashCode methods are there in Object method. so that we can override them.
+don't worry overriding hashCode means you don't have to write your own hasing algorithm or anything you just have to tell what parameters of the object to use to calculate hash to the Object.hash() function.
+class Employee {
+    int id;
+    String name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+        Employee emp = (Employee) o;
+        return this.id == emp.id && this.name.equals(emp.name);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name); // ✅ Only these fields define "equality"
+    }
+}
+now coming to distinct() function 
+List<Integer> intList = Arrays.asList(2, 5, 3, 2, 4, 3);
+List<Integer> distinctIntList = intList.stream().distinct().collect(Collectors.toList());
+
+
+Short circuting operations:
+
+these operations helps to complete computations on infinite streams in finite time.
+limit(), skip() 
+public void whenLimitInfiniteStream_thenGetFiniteElements() {
+    Stream<Integer> infiniteStream = Stream.iterate(2, i -> i * 2);
+    List<Integer> collect = infiniteStream
+      .skip(3)
+      .limit(5)
+      .collect(Collectors.toList());
+    assertEquals(collect, Arrays.asList(16, 32, 64, 128, 256));
+}
+
+Other than traditional Stream<T> for boxed objects we have specialized streams like IntStream, LongStream, DoubleStream. which are created to operate very efficiently with primitive types. like int, long, double. only these three specialized streams are there in JDK.
+to get these streams we have functions like mapToInt, mapToLong, mapToDouble, mapMultiToInt, mapMultiToLong, mapMultiToDouble, flatMapToInt, flatMapToLong, flatMapToDouble.
+These specialized streams do not extend Stream but extend BaseStream on top of which Stream is also built.
+functions behave a little different in these streams unlike max(), min() in traditonal streams we don't need to pass a comparator here they work directly.
+also other than these we have some additonal  functions like sum(), average(),summaryStatistics() : Returns count, sum, min, max, avg in one shot, count().
+to convert IntStream, LongStream, DoubleStream into traditional stream Stream<T> again we need to use boxed() method.
+ 
+
+
+
+
