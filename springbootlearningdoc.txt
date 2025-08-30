@@ -255,3 +255,13 @@ return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
 while building controller we must enclose all the controller implementation inside try catch to throw custom exceoptions and to handle the exceptions properly to display the exceptions properly.
 
+ Spring Data REST dependency:
+
+HATEOAS (Hypertext as the Engine of Application State)
+
+REST means Representationsal State Transfer that means we are transferring representation either in json or xml of an object state in http transferring.
+
+Spring Boot Reactive Programming:
+
+Heart of spring boot reactive programming are Mono and Flux these are coming from Project Reactor which is written on top java Flow package introduced in Java 9 this flow package is all about reactive streams. reactive means we can manage them like events.
+Spring Web MVC dependency for blocking synchrounous REST apis, Spring WebFlux for non blocking asynchronours apis

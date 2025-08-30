@@ -15,9 +15,16 @@ Java Data Types:
 Java variables:
 
 * There are three types  of variables in java local, instance, static.
+* local variables, Where they live: Inside methods, constructors, or blocks.Java doesn’t want to assume a default value here because these are short-lived and often depend on method logic.
 * local variables must be initialised before using and instance variables are initialised by default on their own.
-* no access modifier or static status can be given local variables.
-* Local variables can be created with the same as instance variables this is called variable shadowing.
+* instance variable
+ int → 0
+double → 0.0
+boolean → false
+Object references → null
+Java assigns default value automatically becuase These are tied to the object's lifecycle, and Java guarantees a predictable default state for new objects.
+* no access modifier or static status can be given local variables but final can be given to local variables. transient volatile cannot be given.
+* Local variables can be created with the same as instance variables this is called variable shadowing. local variables shawodows/hides the instance variable.
 * We cannot have two local variables with the same name.
 
 Java Operators:
@@ -81,9 +88,6 @@ Enum:
 enum is also like a class which is going to have constant values as attributes.
 object cannot be created.
 
-Iterable:
-Contains forEach() method, any collection.iterator() is going to return one Iterator object which has 3 main methods, hasNext(), next(), remove().
-split iterator is used to split the collection into parts and do the parallel processing.
 
 Collection:
 this interface contains methods like add(), addAll(), remove(), set(), get().
@@ -91,6 +95,10 @@ this interface contains methods like add(), addAll(), remove(), set(), get().
 Collections class:
 this contains 3 main attributes EMPTY_SET, EMPTY_MAP, EMPTY_LIST.
 contains methods like sort(), reverse(), copy(), binarySearch(), max(), min() all are static methods.
+
+Iterable:
+Contains forEach() method, any collection.iterator() is going to return one Iterator object which has 3 main methods, hasNext(), next(), remove().
+split iterator is used to split the collection into parts and do the parallel processing.
 
 List:
 can be assumed like nagarjuna's cycle chain  in "Shiva"
@@ -413,6 +421,140 @@ functions behave a little different in these streams unlike max(), min() in trad
 also other than these we have some additonal  functions like sum(), average(),summaryStatistics() : Returns count, sum, min, max, avg in one shot, count().
 to convert IntStream, LongStream, DoubleStream into traditional stream Stream<T> again we need to use boxed() method.
  
+float and double stores values in Base of two so arithmetic calculations on float and double will not give correct answers float and double are used in scientific calculations and graphics rendering becuase these are fast and more than accuracy speed matters in scientific calculations. BigDecimal gives accurate results because it stores values in Base of 10 we always need to use String constructor of BigDecimal it is used for price and financial values storing because there accuracy matters the most.
+
+byte is nothing but hexadecimal representation of bits, when converting byte array to a String we must pass byte array to the constructor and along with this we must pass which encoding standard do we need to use other wise it will use default platform encoding. UTF-8 and UTF-16 are mostwidely used encodings internationally all systems use one of these which coveers all language characters, emoji's, special characters utf-8 is optimised for English/ASCII text where utf 16 is optimized for asian, chinese languages. we must use the same encoding which our source is sending or expecting other wise we will get irrrelevant strings.
+String str = new String(bytes, "UTF-8"); // no encoding is required when converting bytes to numbers.
+
+clone() method is present inside Object class we need to overrride it like 
+ protected Point clone() throws CloneNotSupportedException {
+        return (Point) super.clone(); // shallow copy
+    }
+
+this will call clone() method in Object make sure the class implements Cloneable it is a marker interface if not implemented it will throw CloneNotSupportedException exception.
+cloning happens with using = operator so for primitve variables and immutable objects it is fine changing value in original object will not change value in cloned object but when your class is having mutable objects or collections both copy object and original object will point to same reference of mutable and collection so when you add or delete one element in something it will delete the element in cloned object also. whatever default object that is given by object class after copying with = operator it is called shallow copy now after you get shallow copy you should take reference of this mutable object and create new object in clone overriding method this is called deep copying.
+
+Heap memory is nothing but part of the JVM memory which is allocated from the RAM so Heap is part of JVM and JVM is part of RAM.
+
+RAM
+ └── JVM Process
+      ├── Heap (shared by all threads) that's why volatile is applied only on class variables not on local variables. because local variables are stored in threadd's own stack
+      ├── Method Area / Metaspace / Class area / Static members area** ((Runtime constant pool (string pool, constants used in bytecode), class metadata))
+      ├── Thread 1 → has its own stack
+      ├── Thread 2 → has its own stack
+      ├── Thread 3 → has its own stack
+
+So there are 3 memory areas in JVM heap, method area, stack. heap and method area are shared by all the threads but stack is unique for all the threads it is not shared between each other.
+heap we know objects are created but in stack we will have class metadata, bytecode of methods, static variables***, run time constants and pools like string pools and constant numbers.
+so jvm is nothing but these memory areas, GC, jit, interpreter, class loadders.
+
+Any object is created in heap, but if no pointer is pointing to this object garbage collector will clean it after calling finalize() method. we cannot control gc only jvm can do we can use System.gc() or Runtime.gc() to request jvm to do gc but it is not gaurenteed jvm will do whenever it wanted to. if gc won't do it's job properly we will get throws OutOfMemoryError or java. lang.OutOfMemoryError heap space because we will not have space to create objects. when an object is create we will assign one reference to it with a name later if we make this reference null then that object will become eligible for gc. same case with static reference also.
+
+Runtime objects are singleton representing the JVM runtime.
+Runtime runtime = Runtime.getRuntime();
+runtime.gc();
+
+if two objects are same by .equals()  method they will and they must return same hashcode() but if hashcode() of two objects is same they may not be equal when checked with equals() method.
+
+even though you declare a method as final you can still overload it in same class or subclass but you cannot override it.
+
+String s = "abc";
+this is going to create an object with abc in the pool area not the heap area and that pool reference will be given to s.
+
+String s = new String("abcd");
+here one object will be created in the heap with content as abcd s will have reference to that heap object also another object with content abcd will be created in the pool as well if abcd is not already there. so when you are using String s = new String(...) you are creating two objects without knowing.
+
+s = s.intern() this intern method is going to always return a reference from the pool area if the string is there in pool it will return that reference or if it is not there it will create one gives out the pool reference not the heap.
+
+s = s.concat("xyz") this will also create new heap object and pool object with abcdxyz content and heap reference will be given to s  but if you call s.concat("xyz").intern() we will get the pool reference into s.
+
+System.out.println(Integer.MIN_VALUE); // -2147483648 negative but
+Double.MIN_VALUE = 4.9E-324 (≈ 0.000…00049 with 323 zeros after the decimal). It is the smallest positive nonzero value that a double can represent (> 0).
+
+Finally always executes → even if there’s a return, break, continue, or throw in try/catch.
+Except when:
+JVM crashes (System.exit(), kill -9, power loss, etc.) or if Thread is killed forcibly in rare unsafe ways
+
+If finally itself has a return, it overrides everything before it (return values, swallows exceptions if we are thrwoing any).
+⚠️ Very dangerous → avoid returning from finally.
+
+public int test() {
+    try {
+        return 1;
+    } finally {
+        return 2;
+    }
+} // this will return 2
+
+public int test() {
+    try {
+        throw new RuntimeException("Error!");
+    } finally {
+        return 5;
+    }
+} this will swallow the exception.
+
+public int test() {
+    try {
+        System.exit(0); or Runtime.getRuntime().exit(0); or Runtime.getRuntime().halt(0); 
+        return 1;
+    } finally {
+        System.out.println("Finally?");
+    }
+} //this will not run finally method.
+
+A shutdown hook is a thread you register with the JVM that will run when the JVM is shutting down.
+Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutdown hook: Cleaning up before exit!");
+        }));
+
+expression 1.0 / 0.0 will not throw ArithmeticExcpetion and return Double.INFINITY.
+Also, note that the comparison x == Double.NaN always evaluates to false, even if x itself is a NaN. To test if x is a NaN, one should use the method called Double.isNaN(x) to check if the given number is NaN or not. If you know SQL, this is very close to NULL there.
+
+if two interfaces have a default method with same name and same argument and if one class implements both of these interfaces at a time and when i call that method from object of the implemented class which method will be called answer we must override that common method in our class compiler is going to throw a warning.
+
+Exception handling:
+
+java.lang.Object
+   ↳ java.lang.Throwable
+         ↳ java.lang.Exception
+         ↳ java.lang.Error
+
+Exception Represents conditions your program can recover from IOException, SQLException, ClassNotFoundException (checked), NullPointerException, IllegalArgumentException (unchecked)
+Error Represents serious problems inside the JVM or system like OutOfMemoryError, StackOverflowError, NoClassDefFoundError, InternalError technically you can catch an error but think about it errror occured already means your jvm is unstable there is no possibility for you to catch and proceed with execution.
+
+Exception two types checked exceptions and unchecked exceptions.
+Classes which exted Exception class and it's subclasses except RuntimeException and its subclasses. Runtime also extending exception internally but everything below RuntimeException are unchecked.
+When java designers or us, while creating our own Exception class when we extend it with Exception or it's subclasses it will become checked exception and when we extend our own class with RuntimeException it will become unchecked exception.
+
+if we are thrwoing Checked exceptions from any method the callers methods must handle it by try catch or must declare with throws to propagate the exception bubble to surface once it reaches the top most surface the main method if you still dont handle it main method if you just declare it with throws jvm will handle it by haulting the program whenever exeption occurs.
+that's why they are named as checked that means they must be checked.
+
+Classes which extend RuntimeException, its subclasses, Error and it's subclasses are called unchecked exceptions like ArithmaticException, NullPointerException etc. these do not need to be mandatorily handled or declared becuase these are automatically propagated to the surface and if not handled on main then jvm handles by printing the stacktrace and haulting the program same like checked.
+
+Now in overloading there are no strict rules to follow exceptions.
+In overriding for unchecked exceptions there are no strict rules to follow but for checked exception there are strict rules to follw.
+
+Parent { void m() throws IOEXception}
+
+in this case child can throws same exception(void m() throws IOException {}) or it can throws narrow exception (void m() throws FileNotFoundException {}) or it can not throws anything (void m() throws Exception {}) because it's like child is giving confidence that me being childd will not throw any exception but you cannot throws broader exceptions like  void m() throws Exception {} is not allowed.
+
+class Parent { void m() {} }
+in this case if parent is not throwing any exception you cannot declare or throw any exception in your child method (  void m() throws IOException {} //not allowed) you can throw or declare unchecked exception.
+
+A method can declare multiple exceptions, Caller must handle/declare all of them, Overriding rules apply to each exception individually //void read() throws IOException, SQLException {}
+Constructors can declare exceptions same as methods, If superclass constructor throws checked exceptions → subclass constructor must handle/declare them.
+catch (IOException | SQLException e) One catch can handle multiple exception types
+If an interface default method declares a checked exception, if implementing class calls this method caller must handle/declare it.
+
+Try-with-resources (Java 7+) automatically closes resources that implement AutoCloseable, Closeable
+try (BufferedReader br = new BufferedReader(new FileReader("data.txt"))) {
+    System.out.println(br.readLine());
+} catch (IOException e) {
+    e.printStackTrace();
+}// you don't need a finally block
+
+
 
 
 
